@@ -140,4 +140,4 @@ for i, target in enumerate(model_names):
     go(model, data_loader, i)
 
 write_data()
-MakePrediction.main(args.path, 0.7)
+MakePrediction.main(args.path, 0.5)
