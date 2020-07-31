@@ -99,10 +99,10 @@ class SIMECDataset(torch.utils.data.Dataset):
                         break
 
                     self.imgs = np.append(self.imgs, s)
-                    id = s.split(".")[1].split("/")
+                    id = s.split(".")[-2].split("/")
                     l = [0]*8
                     l[i+1] = 1
-                    self.dicio[id[2] + "-" + id[3]] = l
+                    self.dicio[id[-2] + "-" + id[-1]] = l
                     if(i == (args.target - 1)):
                         counter_target += 1
                     elif(i != (args.target - 1)):
@@ -121,15 +121,18 @@ class SIMECDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         # Carrega image e label
-        img_path = os.path.join(self.root, self.imgs[idx])
+        # img_path = os.path.join(self.root, self.imgs[idx])
+        img_path = os.path.join('', self.imgs[idx])
         try:
             img = Image.open(img_path).convert("RGB")
         except:
             print(img_path)
 
         # Pega label do dicionario
-        index = self.imgs[idx].split(".")[1].split("/")
-        label = self.dicio[index[2] + "-" + index[3]][args.target]
+        # print(self.imgs[idx])
+        index = self.imgs[idx].split(".")[-2].split("/")
+        # print(index)
+        label = self.dicio[index[-2] + "-" + index[-1]][args.target]
         # print(img_path, label)
 
         # Transforma imagem em tensor
