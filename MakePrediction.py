@@ -22,6 +22,7 @@ def main(path, threshold):
 		labels = [0,0,0,0,0,0,0]
 		for image in v:
 			for i in range(0, 14, 2):
+				print(image)
 				if(image[i] == '1' and float(image[i+1]) >= threshold):
 					labels[int(i/2)] += 1
 
@@ -54,7 +55,10 @@ def main(path, threshold):
 			"Vedacao vertical","Coberturas","Esquadrias","Revestimentos externos","Pisos externos e paisagismo"])
 
 			for k, v in final_obra_predictions.items():
-				line = [k,0]
+				if(np.sum(v) == 0):
+					line = [k,1]
+				else:
+					line = [k,0]
 				for i in range(7):
 					line += [int(v[i])]
 				spamwriter.writerow(line)
