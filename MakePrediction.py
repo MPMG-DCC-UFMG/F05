@@ -10,7 +10,7 @@ def main(path, threshold):
 
 	dicio = {}
 	for row in data[1:]:
-		obra_id = row[0].split('-')[0]
+		obra_id = row[0].rsplit('-', 1)[0]
 		if(obra_id not in dicio):
 			dicio[obra_id] = [row[3:]]
 		else:
