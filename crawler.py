@@ -2,20 +2,43 @@ import pycurl
 import scrapy
 import csv
 import os
+from datetime import datetime
+from scrapy.http.request import Request
 
-with open('general_data.csv', 'w', newline='') as csvfile:
+now = datetime.now()
+dt_string = now.strftime("%Y-%m-%d_%Hh%Mm")
+path = "IMAGES_" + dt_string;
+	
+if not os.path.exists(path):
+    os.mkdir(path)
+
+with open(path + '/general_data.csv', 'w', newline='') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',')
     spamwriter.writerow(["ID", "Título","Situação","Município - UF","Localização","CEP","Endereço","Bairro","Termo/Convênio","Fim da Vigência","Situação do Termo","Data da Última Vistoria","Percentual de Execução"])
 
-if not os.path.exists("IMAGES"):
-    os.mkdir("IMAGES")
-
 class SIMECSpider(scrapy.Spider):
     name = "simec_spider"
-    start_urls = [f'http://simec.mec.gov.br/painelObras/vistoria.php?obra={i}' for i in range(8062, 31979)]
+
+    def start_requests(self):
+        if(not hasattr(self, "max_id")):
+            self.max_id = 40000
+        start_urls = [f'http://simec.mec.gov.br/painelObras/vistoria.php?obra={i}' for i in range(8062, int(self.max_id))]
+        for url in start_urls:
+            yield Request(url, self.parse)
 
     def parse(self, response):
         id = response.url.split("=")[1]
+
+        title = response.xpath(".//h2/text()").get() #Titulo
+        if title == None:
+            print("None")
+            return
+
+        attr = response.xpath(".//dd/text()").getall() #Situacao
+        if len(attr) < 10:
+            print("Attr")
+            return
+
         data = [
             id, #ID
             response.xpath(".//h2/text()").get(), #Titulo
@@ -33,15 +56,15 @@ class SIMECSpider(scrapy.Spider):
         ]
         images = response.xpath(".//a").css(".img_foto::attr(src)").getall()
 
-        with open('general_data.csv', 'a', newline='') as csvfile:
+        with open(path + '/general_data.csv', 'a', newline='') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',')
             spamwriter.writerow(data)
 
-        if not os.path.exists("IMAGES/" + id):
-            os.mkdir("IMAGES/" + id)
+        if not os.path.exists(path + "/" + id):
+            os.mkdir(path + "/" + id)
 
         for i, img in enumerate(images):
-            file = open(f"IMAGES/{id}/{i}.jpeg", "wb")
+            file = open(f"{path}/{id}/{i}.jpeg", "wb")
             crl = pycurl.Curl()
             crl.setopt(crl.URL, img)
             crl.setopt(crl.WRITEDATA, file)

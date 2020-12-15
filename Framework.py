@@ -16,7 +16,9 @@ import MakePrediction
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--path', type=str, required=True)
+parser.add_argument('--single_folder', type=bool, default=False)
 args = parser.parse_args()
+
 
 class InputDataset(torch.utils.data.Dataset):
     def __init__(self, root, transforms=None):
@@ -32,8 +34,33 @@ class InputDataset(torch.utils.data.Dataset):
             if(filename.endswith(".txt") or filename.endswith(".csv")):
                 continue
 
-            self.imgs = np.append(self.imgs, os.path.join(root, filename))
-            imgs_preds[filename] = (os.path.join(root, filename), [0]*7)
+            path2 = (os.path.join(root, filename))
+
+            if(args.single_folder):
+                if(os.path.isdir(path2)):
+                    continue
+
+                if(args.path[-1] == '/'):
+                    folder = args.path.split('/')[-2]
+                else:
+                    folder = args.path.split('/')[-1]
+
+                self.imgs = np.append(self.imgs, os.path.join(root, filename))
+                imgs_preds[folder+'-'+filename] = (os.path.join(root, folder+'-'+filename), [0]*7)
+            else:
+                if(not os.path.isdir(path2)):
+                    continue
+
+                directory2 = os.fsencode(path2)
+                for file2 in os.listdir(directory2):
+                    filename2 = os.fsdecode(file2)
+                    print(filename2)
+                    if(filename2.endswith(".txt") or filename2.endswith(".csv")):
+                        continue
+
+                    self.imgs = np.append(self.imgs, os.path.join(root, filename+'/'+filename2))
+                    imgs_preds[filename+'-'+filename2] = (os.path.join(root, filename+'-'+filename2), [0]*7)
+                
 
     def __getitem__(self, idx):
         # Carrega image
@@ -93,7 +120,9 @@ def go(model, data_loader_test, class_id):
             output = model(inps)
 
             # Getting labels and predictions from last epoch.
-            img_name = img_path[0].split("/")[-1]
+            splits =  img_path[0].split("/")
+
+            img_name = splits[-2] + '-' + splits[-1]
             probs = nn.functional.softmax(output, dim=1)
             imgs_preds[img_name][1][i] = probs.max(1)
 
@@ -103,7 +132,10 @@ def write_data():
 
     for k, v in imgs_preds.items():
         print("k:", k.split("/"))
-        file_path = v[0].split(".")[0] + ".txt"
+        if(args.single_folder):
+            file_path = os.path.join(os.path.split(v[0])[0], os.path.splitext(k.split("-")[-1])[0] + ".txt")
+        else:
+            file_path = os.path.join(os.path.split(v[0])[0], os.path.splitext(k.replace("-", "/"))[0] + ".txt")
         print(file_path)
 
         with open(file_path, 'w') as file:
@@ -136,7 +168,7 @@ model = get_classification_model()
 data_loader = set_dataset()
 
 for i, target in enumerate(model_names):
-    model.load_state_dict(torch.load("dream_team/Resnet34-" + target + ".pt"))
+    model.load_state_dict(torch.load("networks/Resnet34-" + target + ".pt"))
     go(model, data_loader, i)
 
 write_data()
