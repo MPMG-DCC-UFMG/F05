@@ -1,0 +1,3 @@
+Pasta de exemplo que não contém as imagens do dataset, usada apenas para testar o script de balanceamento com o uso do parâmetro check como 0 para não gerar erros.
+
+Para se testar o código de treinamento, pode-se utilizar a pasta EXAMPLE_DATASET na raíz (fora da pasta INTERACTIVE), seguindo os exemplos apresentados no relatório F05.3.
