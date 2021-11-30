@@ -1,3 +1,6 @@
+import nltk
+nltk.download('stopwords')
+
 import numpy as np
 import cv2
 from PIL import Image
@@ -6,8 +9,6 @@ import os
 import pytesseract
 import pdfplumber
 from pdf2image import convert_from_path
-import nltk
-nltk.download('stopwords')
 from unidecode import unidecode
 from difflib import SequenceMatcher
 
