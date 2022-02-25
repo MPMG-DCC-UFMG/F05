@@ -12,10 +12,11 @@ RUN pip install --no-cache --upgrade tensorboard Cython onnx gsutil matplotlib \
     scikit-learn numpy utils scikit-image
 RUN pip install pytesseract
 RUN export DEBIAN_FRONTEND=noninteractive && apt-get -yq install tesseract-ocr-por
-RUN pip install pdfplumber pdf2image nltk 
+RUN pip install pdfplumber==0.5.28 pdf2image nltk 
 RUN apt-get install -y npm
 RUN npm install difflib
 RUN pip install bs4 lxml
 RUN apt-get install -y poppler-utils
+RUN pip install dateparser
 
 RUN wget https://github.com/MPMG-DCC-UFMG/F05/archive/refs/heads/master.zip && unzip master.zip
