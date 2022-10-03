@@ -108,9 +108,8 @@ def parse_one_annot(annotations_data, filename):
     return file_class
 
 
-all_images = [os.path.join(path_to_dataset, label, image)
-                for label in os.listdir(path_to_dataset)
-                  for image in os.listdir(os.path.join(path_to_dataset, label))]
+all_images = [os.path.join(path_to_dataset, image)
+                for image in os.listdir(os.path.join(path_to_dataset))]
 
 annotations_data = pd.read_csv(path_to_data_file)
 all_labels = []
