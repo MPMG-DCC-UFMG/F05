@@ -5,4 +5,4 @@ Esse codigo inicial foi tirado do site https://fastapi.tiangolo.com/tutorial/req
 Para executar pode ser necessario instalar as bibliotecas do seguinte link https://fastapi.tiangolo.com/#installation
 
 O comando para execução é: 
-uvicorn main:app --reload
+uvicorn api:app --reload
