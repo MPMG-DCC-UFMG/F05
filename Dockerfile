@@ -18,5 +18,10 @@ RUN npm install difflib
 RUN pip install bs4 lxml
 RUN apt-get install -y poppler-utils
 RUN pip install dateparser
+RUN pip install fastapi
+RUN pip install "uvicorn[standard]"
+RUN pip install python-multipart
 
 RUN wget https://github.com/MPMG-DCC-UFMG/F05/archive/refs/heads/master.zip && unzip master.zip
+
+CMD ["uvicorn", "F05-master.api:app", "--host=0.0.0.0", "--port=15000", "--reload"]
