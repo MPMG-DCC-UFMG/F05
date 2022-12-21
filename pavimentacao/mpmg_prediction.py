@@ -115,7 +115,11 @@ net = models.resnet34(pretrained=True).to(args['device'])
 num_ftrs = net.fc.in_features
 net.fc = nn.Linear(in_features=num_ftrs, out_features=args['n_classes'], bias=True).to(args['device'])
 
-net.load_state_dict(torch.load("model.pth"))
+# use models from folder "networks", used in API
+if not os.path.isdir("model.pth"):
+    net.load_state_dict(torch.load("./networks/model_pavimentacao_resnet34.pth"))
+else:
+    net.load_state_dict(torch.load("model.pth"))
 
 
 
