@@ -9,7 +9,8 @@ RUN python -m pip install --upgrade pip
 
 RUN pip install --no-cache --upgrade tensorboard Cython onnx gsutil matplotlib \
     opencv-python pillow scipy torch torchvision tqdm \
-    scikit-learn numpy utils scikit-image
+    scikit-learn utils scikit-image
+RUN pip install numpy==1.19.5
 RUN pip install pytesseract
 RUN export DEBIAN_FRONTEND=noninteractive && apt-get -yq install tesseract-ocr-por
 RUN pip install pdfplumber==0.5.28 pdf2image nltk 
