@@ -11,6 +11,9 @@ app = FastAPI()
 
 @app.post("/obras/")
 async def upload_images(files: List[UploadFile] = File(...),id=0):
+    print(os.listdir())
+    os.chdir("obras")
+    
     #criar a pasta api/img/
     mypath = 'api/img_obras_'+str(id)+'/'
     if not os.path.isdir(mypath):
