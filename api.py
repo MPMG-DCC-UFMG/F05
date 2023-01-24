@@ -13,7 +13,7 @@ app = FastAPI()
 async def upload_images(files: List[UploadFile] = File(...),id=0):
     print(os.listdir())
     os.chdir("obras")
-    
+
     #criar a pasta api/img/
     mypath = 'api/img_obras_'+str(id)+'/'
     if not os.path.isdir(mypath):
@@ -35,16 +35,17 @@ async def upload_images(files: List[UploadFile] = File(...),id=0):
     #remover pasta com dados anteriores
     shutil.rmtree(mypath)
 
+    #voltar diretorio padrão e retornar predições
+    os.chdir("..")
     return {response1},{response}
 
 @app.post("/pavimentacao/")
 async def upload_images(files: List[UploadFile] = File(...),id=0):
-    #criar a pasta api/img/
     print(os.listdir())
     os.chdir("pavimentacao")
     
+    #criar a pasta api/img/
     mypath = 'api/img_pavimentacao_' + str(id) + '/'
-    
     if not os.path.isdir(mypath):
         os.mkdir(mypath)
 
@@ -60,6 +61,9 @@ async def upload_images(files: List[UploadFile] = File(...),id=0):
     
     #remover pasta com dados anteriores
     shutil.rmtree(mypath)
+
+    #voltar diretorio padrão e retornar predições
+    os.chdir("..")
     return {response}
 
 #chama o post
